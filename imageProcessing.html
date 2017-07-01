@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Image Processing</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <!--<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+                </button>-->
+                <a class="navbar-brand" href="index.html">Main Page</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <!--<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="index.html">Projects</a>
+                    </li>
+                    <li>
+                        <a href="about.html">About</a>
+                    </li>
+                    <li>
+                        <a href="post.html">Sample Post</a>
+                    </li>
+                    <li>
+                        <a href="contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>-->
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-color: #373D49">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>An Image Processing Tool</h1>
+                        <h3>
+                            Implemented some basic image processing operations in C++, such as those found in programs like <i>Photoshop</i> or <i>ImageMagick</i>. It includes basic things like brightening, gamma correcting and cropping, as well as more advanced operations like antialiased shifting and resizing.
+                        </h3>
+                        <span class="meta">Posted by Alex Ouyang & Antwan gaggi on April 27, 2017</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Post Content -->
+    <article>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <h2 class="section-heading">Software</h2>
+                    <p>
+                    <a href ="https://drive.google.com/open?id=0B6StwNJiMLLzLXdZeEZrdE5uOE0">Download Unix Executable Here</a>
+                    </p>
+                    <p>
+                    <blockquote> 
+                        Example Usage: 
+                        <br>
+                        <code>
+                            $ ./image -help
+                        </code>
+                    </blockquote>
+                    </p>
+
+                    <h2 class="section-heading">Some Basics</h2>
+                    <p>
+                        Pixel is the basic unit of programmable color in a computer image. Each pixel is a sample of an original image. The intensity of each pixel is a variable. A pixel is typically represented by three or four component intensities such as red, green, and blue, which are typically in the range of 0 – 255, this is also known as the RGB color model.
+                    <p>
+                    <h2 class="section-heading">Changing Brightness</h2>
+                    <p>
+                        To adjust image brightness, we simply scale each RGB component of a pixel by a positive factor &alpha;, When &alpha; is 0, we get a pure black image, when &alpha; is 1 we get the original image back. In other words, if we want to darken the image, we interpolate between the zero RGB intensities (black image) and the current image. Note that linear interpolation is often used to blend two images by interpolating between between corresponding pixel values of the two images as in the following example, where &alpha; and (1 - &alpha;) are used in a weighted average to obtain the interpolated pixel values:
+                        <blockquote class="equation">
+                            output_rgb_component = (1 - &alpha;) * black_rgb_component + &alpha; * input_rgb_component
+                        </blockquote>
+                    </p>
+                    <p>
+                        Since black RGB component is 0, we can simplify the formula: 
+                        <blockquote class="equation">
+                            output_rgb_component = &alpha; * input_rgb_component
+                        </blockquote>
+                        We can also obtain the brightened image through extrapolation.
+                    </p>
+                    <p>
+                        Note: To see full rez image, you'll need to open the image in a new tab
+                    </p>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/brightness_0.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">0.0 <br> Black Image</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/brightness_0.5.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">0.5</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/brightness_1.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">1.0 <br> Input Image</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/brightness_1.5.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">1.5</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/brightness_2.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">2.0</span>
+                        </li>
+                    </ul>
+
+                    <blockquote> Example Usage: 
+                        <br>
+                        <code>
+                            $ ./image -brightness 1.5 &lt;input.bmp &gt;.out.bmp
+                        </code>
+                    </blockquote>
+
+
+
+
+
+
+
+
+                    <h2 class="section-heading">Changing Contrast</h2>
+                    <p>
+                        Contrast is the difference in luminance that makes an object distinguishable. It can be controlled by interpolating and extrapolating between a constant grey image and the current image just like how we control brightness with a contract factor &alpha;. Interpolation reduces contrast and extrapolation boosts the contrast. The grey image is obtained by calculating the average image luminance and assign each grey pixel’s rgb components to the same average image luminance. Note that when a pixel’s rgb components are of the same value, it is on the grayscale. Here is one way to calculate pixel luminance (<a href ="http://www.itu.int/rec/R-REC-BT.601">http://www.itu.int/rec/R-REC-BT.601</a>): 
+                        <blockquote class="equation">
+                            pixel_luminance = (0.299 * R + 0.587 * G + 0.114 * B)
+                        </blockquote>
+                    </p>
+                    <p>
+                        Then apply interpolation on all rgb component for each pixel in the image as follows:
+                        <blockquote class="equation">
+                            output_rgb_component = (1 - &alpha;) * average_pixel_luminance + &alpha; * input_rgb_component
+                        </blockquote>
+                        A contrast factor of 0 produces a grey image with no contrast, 1 gives the original image, between 0 and 1 loses contrast, greater than 1 increases contrast, and less than 0 inverts the image. 
+                    </p>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/contrast_-1.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">-1.0</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/contrast_0.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">0.0 <br> Grey Image </span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/contrast_0.5.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">0.5</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/contrast_1.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">1.0 <br> Input Image</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/contrast_2.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">2.0</span>
+                        </li>
+                    </ul>
+                    <blockquote> Example Usage: 
+                        <br>
+                        <code>
+                            $ ./image -contrast 1.5 &lt;input.bmp &gt;.out.bmp
+                        </code>
+                    </blockquote>
+
+
+
+
+
+                    <h2 class="section-heading">Changing Saturation</h2>
+                    <p>
+                        Saturation refers to the perceived intensity of a specific color. It is the purity of the color and represents the amount of grey in proportion to the hue. To control the saturation of an image, pixel components must move towards or away from the pixel's luminance value. In other words, we interpolate between the grayscale version of the input image and the input image using the saturation factor &alpha;. The grayscale image is obtained by calculating a unique luminance per pixel using the same pixel luminance calculation discussed in the above section. Then apply the same interpolation technique as follows:
+                        <blockquote class="equation">
+                            output_rgb_component = (1 - &alpha;) * current_pixel_luminance + &alpha; * input_rgb_component
+                        </blockquote>
+                        When &alpha; is 0, we obtain the grayscale version of the image; when &alpha; is 1, we obtain the original input image. So when &alpha; is between 0 and 1, it makes the image grayer, reducing the saturation of the colors. For &alpha; bigger than 1, we extrapolate increasing saturation. As for negative values, the hues or colors of the input image is inverted, like a photographic negative.  
+                    </p>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/saturation_-1.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">-1.0</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/saturation_0.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">0.0 <br> Greyscale Image </span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/saturation_0.5.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">0.5</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/saturation_1.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">1.0 <br> Input Image</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/saturation_2.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">2.0</span>
+                        </li>
+                    </ul>
+                    <blockquote> Example Usage: 
+                        <br>
+                        <code>
+                            $ ./image -saturation 1.5 &lt;input.bmp &gt;.out.bmp
+                        </code>
+                    </blockquote>
+
+
+
+
+
+
+                    <h2 class="section-heading">Changing Gamma</h2>
+                    <p>
+                        Some images are not corrected for the nonlinear relationship between pixel value and displayed intensity for a color monitor. This nonlinear relationship can be described by a function raised to the power of gamma (&gamma;):
+                        <blockquote class="equation">
+                            displayed_intensity = rgb_component <sup>&gamma;</sup>
+                        </blockquote>
+                    </p>
+                    <p>
+                        Gamma correction corrects this by applying the inverse of this relationship to pixel values for all pixels in an image. Normally, input RGB component and output RGB component are in the range of 0 – 1; if the input RGB component is in the range of 0 - 255, we divide that component by 255 to normalize it:
+                        <blockquote class="equation">
+	                        normalized_input_rgb_component = input_rgb_component / 255
+                            <br>
+                            normalized_output_rgb_component = normalized_input_rgb_component <sup>(1.0 / &gamma;)</sup>
+                            <br>
+                            output_rgb_component = normalized_output_rgb_component * 255
+                            <br>
+                        </blockquote>
+                        When &gamma; is 1, the output image is unchanged, &gamma; greater than 1 brighten it, and lower values darken it. Note that &gamma; should be positive. If &gamma; is 0, the output is a black image; if &gamma; is smaller than 0, no processing is done and the output is the input image.
+                    </p>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/gamma_0.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">&gamma; = 0.0 </span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/gamma_0.5.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">0.5</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/flower.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">1.0 <br> Input Image</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/gamma_2.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">2.0</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/gamma_8.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">8.0</span>
+                        </li>
+                    </ul>
+                    <blockquote> Example Usage: 
+                        <br>
+                        <code>
+                            $ ./image -gamma 2.0 &lt;input.bmp &gt;.out.bmp
+                        </code>
+                    </blockquote>
+
+
+
+
+
+
+                    <h2 class="section-heading">Cropping Images</h2>
+                    <p>This allows one to crop the image, for instance to focus on a mandrill’s eye or nose as shown in the cropped picture below. The algorithm works by copying pixels at appropriate positions based on the offset x and y from a contiguous 1d array in the original image to a new image with newly specified width and height. We assume that x ranges from 0 to width-1 from left to right and y from 0 to height-1 from top to bottom. w and h are the size of the cropped image.</p>
+
+                    <ul class="flex-container">
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/mandrill.png" alt="">
+                            </div>
+                            <span class="flex-item-text">Original Image (512 x 512)</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/mandrill.png" alt="">
+                            </div>
+                            <span class="flex-item-text">Cropped Image: x=0, y=0, w=512, h=512</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/crop_mandrill_eye.png" alt="">
+                            </div>
+                            <span class="flex-item-text">Cropped Image: x=120, y=35, w=100, h=60</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/crop_mandrill_nose.png" alt="">
+                            </div>
+                            <span class="flex-item-text">Cropped Image: x=160, y=80, w=180, h=370</span>
+                        </li>
+                    </ul>
+
+                    <p>
+                        Below shows how we handle some interesting edge cases: 
+                        <ul>
+                            <li>
+                                Case 1: If any of x, y, w, or h are negative, the output is an empty image. 
+                            </li>
+                            <li>
+                                Case 2: If cropped image dimension exceeds original image bounds, that is if cropping parameter w, h larger than the original image height and width. Then the cropped image will only contain the captured portion of the original image, i.e. cropped_image_max_height = original_image_height - y 
+                            </li>
+                            <li>
+                                Case 3: If x or y exceeds original image bounds then the output is an empty image
+                            </li>
+                            <li>
+                                Case 4: If w or h are 0 then the output is an empty image
+                            </li>
+                        </ul>
+                    </p>
+
+                    <ul class="flex-container">
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/crop_img_exceed_bonds.png" alt="">
+                            </div>
+                            <span class="flex-item-text">Case 2: x = 150, y = 50, w=15000, h=100</span>
+                        </li>
+                    </ul>
+
+                    <blockquote> Example Usage: 
+                        <br>
+                        <code>
+                            $ ./image -crop 150 50 100 100 &lt;input.bmp &gt;.out.bmp
+                        </code>
+                    </blockquote>
+
+
+
+
+
+                    
+                    <h2 class="section-heading">Quantization and Dithering</h2>
+                    <p>
+                        Dithering is used to create the illusion of "color depth" in images with a limited color palette using color quantization and reducing quantization errors. For example, when dithering an image from 8-bit color to 1-bit color, the colors that are available in the 8-bit color palette are approximated by a diffusion of colored pixels from the available 1-bit color palette. We have implemeted various techniques for dithering images with a small number of bits (1-8 bit) that we'll discuss below.
+                    </p>
+                    <h2 class="section-heading">Quantize</h2>
+                    <p>
+                        Color quantization is a process that reduces the number of distinct colors used in an image. To quantizes the image we use "nbits" per color channel. We first need to define a map between the input, say 8-bit [0 - 255] and the output [0 - (2<sup>nbits</sup> - 1)]. Note that we only support nbits between 1 and 8 in our implementation. A simple way of doing this is to first convert all values into floating point to lie between 0 and 1 (by dividing the input by 256). Then, select the quantum using
+                        <blockquote class="equation">
+                            q = floor ( p / 256.0 * b )
+                        </blockquote>
+                    </p>
+                    <p>
+                        where q is the appropriate quantum, p is the original pixel value in the range from 0 to 1, and b is the number of bins or quanta and is calculated using
+                        <blockquote class="equation">
+                            b = 2<sup>nbits</sup>
+                        </blockquote>
+                    </p>
+                    <p>
+                        These values must then be mapped back into the 0 - 255 range to obtain the final colorc c<sub>f</sub>
+                        <blockquote class="equation">
+	                        c<sub>f</sub> = floor ( 255 * q / (b - 1) )
+                        </blockquote>
+                    </p>
+                    <p>
+                        Note that a fast way for calculate b = 2<sup>nbits</sup> is to use bit shifting in c++
+                        <blockquote class="equation">
+	                        b = 1 << nbits
+                        </blockquote>
+                    </p>
+                    <p>
+                        The problem with quantization is that it introduces a clear contouring for lower numbers of bits. To prevent this from happening we will need to handle quantization errors better. Dithering is such a process that can distribute errors among pixels to obtain better results. We have implemented two dithering algorithms here: Random Dither and Floyd-Steinberg Dither.
+                    </p>
+                    <blockquote> Example Usage: 
+                        <br>
+                        <code>
+                            $ ./image -quantize 2 &lt;input.bmp &gt;.out.bmp
+                        </code>
+                    </blockquote>
+                    <h2 class="section-heading">Random Dither</h2>
+                    <p>
+                        Random Dither was the first attempt to correct the contouring produced by fixed thresholding. Random Dither adds some noise before quantizing. The noise helps to break up the contouring. Perceptually, noise is found to be preferable since human eyes are more tolerant of high-frequency noise than contours or aliasing. In addition to the quantization process above, we add noise in the range from [-.5 ... +.5] when selecting the quantum as shown below.
+                        <blockquote class="equation">
+                            q = floor ( p / 256.0f * noise )
+                        </blockquote>
+                        Note that noise can be generated using the random function.
+                    </p>
+                    <blockquote> Example Usage: 
+                        <br>
+                        <code>
+                            $ ./image -randomDither 2 &lt;input.bmp &gt;.out.bmp
+                        </code>
+                    </blockquote>
+                    <h2 class="section-heading">Floyd-Steinberg Dither</h2>
+                    <p>
+                        A more advanced dithering algorithm is the Floyd-Steinberg Dither. It achieves dithering using error diffusion, meaning it pushes the residual quantization error of a pixel onto its unprocessed neighboring pixels to be dealt with later. Specifically, the error is split and diffused out with the weights
+                        <br>Right: &alpha; = 7/16
+                        <br>Bottom Left: &beta; = 3/16
+                        <br>Bottom: &gamma; = 5/16
+                        <br>Bottom Right: &delta; = 1/16
+                        <br>Error diffusion reduces net errors which gives better result in comparison to Random Dither.
+                        <br>
+                        <br>As shown in the image below (courtesy of Ravi Ramamoorthi), we diffuse the error for each pixel:
+                        <img class="img-responsive blog-img" src="img/p1/error_diffusion.png" alt="">
+                        Pseudocode:
+                        <blockquote class="equation">
+                            alpha = 7.0 / 16.0
+                            <br>beta = 3.0 / 16.0
+                            <br>gamma = 5.0 / 16.0
+                            <br>delta = 1.0 / 16.0
+                            <br>
+                            <br>for each y from top to bottom
+                            <br>&emsp;for each x from left to right
+                            <br>&emsp;&emsp;oldpixel  = pixels[x][y]
+                            <br>&emsp;&emsp;newpixel  = quantize(oldpixel) &emsp;&emsp;&emsp;&emsp; // quantize() returns the quantized pixel
+                            <br>&emsp;&emsp;pixels[x][y] = newpixel
+                            <br>&emsp;&emsp;quant_error  = oldpixel - newpixel
+                            <br>&emsp;&emsp;pixels[x + 1][y    ] += quant_error * alpha
+                            <br>&emsp;&emsp;pixels[x - 1][y + 1] += quant_error * beta
+                            <br>&emsp;&emsp;pixels[x    ][y + 1] += quant_error * gamma
+                            <br>&emsp;&emsp;pixels[x + 1][y + 1] += quant_error * delta
+                        </blockquote>
+                    </p>
+                    <p>
+                        Note that the pseudocode above assumes all pixels always have 4 valid neighboring pixels, which means it does not deal with pixels on the edges of the image. To handle the edge condition, we can renormalize diffusion weights based on number of valid neighboring pixels to prevent darkening of edge pixels. The weights are renormalize in a way such that errors being diffused sum up to be the quantized error. For example, if the current pixel being quantized is on the right edge then there are no pixels to the right of it, so only the bottom pixel and the bottom left pixel are valid (assume the quantized pixel is in the middle of the image so there are pixels below it), therefore we only diffuse errors to these two pixels and the renormalized weights are &gamma;' = 5/8 for bottom pixel and &beta;' = 3/8 for bottom left pixel.
+                        <blockquote class="equation">
+                            <br>for each y from top to bottom
+                            <br>&emsp;for each x from left to right
+                            <br>&emsp;&emsp;...... do quant_error calculation ......
+                            <br>
+                            <br>&emsp;&emsp;if (pixels[x+1][y] && pixels[x-1][y+1] && pixels[x][y+1] && pixels[x+1][y+1])
+                            <br>&emsp;&emsp;&emsp;// If all neighboring pixels are valid
+                            <br>&emsp;&emsp;&emsp;alpha = 7.0 / 16.0
+                            <br>&emsp;&emsp;&emsp;beta = 3.0 / 16.0
+                            <br>&emsp;&emsp;&emsp;gamma = 5.0 / 16.0
+                            <br>&emsp;&emsp;&emsp;delta = 1.0 / 16.0
+                            <br>&emsp;&emsp;&emsp;...... do error diffusion on valid pixels ......
+                            <br>
+                            <br>&emsp;&emsp;else if (pixels[x+1][y] && ! pixels[x-1][y+1] && pixels[x][y+1] && pixels[x+1][y+1])
+                            <br>&emsp;&emsp;&emsp;// If left bottom pixel is invalid, no need for &beta;
+                            <br>&emsp;&emsp;&emsp;alpha = 7.0 / 13.0
+                            <br>&emsp;&emsp;&emsp;gamma = 5.0 / 13.0
+                            <br>&emsp;&emsp;&emsp;delta = 1.0 / 13.0
+                            <br>&emsp;&emsp;&emsp;...... do error diffusion on valid pixels ......
+                            <br>
+                            <br>&emsp;&emsp;else if (! pixels[x+1][y] && pixels[x-1][y+1] && ! pixels[x][y+1] && pixels[x+1][y+1])
+                            <br>&emsp;&emsp;&emsp;// If right and right bottom pixel are invalid, no need for &alpha; and &delta;
+                            <br>&emsp;&emsp;&emsp;beta = 3.0 / 8.0
+                            <br>&emsp;&emsp;&emsp;gamma = 5.0 / 8.0
+                            <br>&emsp;&emsp;&emsp;...... do error diffusion on valid pixels ......
+                            <br>
+                            <br>&emsp;&emsp;else if (pixels[x+1][y] && ! pixels[x-1][y+1] && ! pixels[x][y+1] && ! pixels[x+1][y+1)
+                            <br>&emsp;&emsp;&emsp;// If only the right pixel is valid, push all error onto that pixel
+                            <br>&emsp;&emsp;&emsp;pixels[x+1][y] += quant_error
+                            <br>
+                            <br>&emsp;&emsp;else if (pixels[x][y+1])
+                            <br>&emsp;&emsp;&emsp;// If only the bottom pixel is valid, push all error onto that pixel
+                            <br>&emsp;&emsp;&emsp;pixels[x][y+1] += quant_error
+                            <br>
+                            <br>&emsp;&emsp;else
+                            <br>&emsp;&emsp;&emsp;// if no neighboring pixels then discard the error and do nothing
+                        </blockquote>
+                    </p>
+
+                    <blockquote> Example Usage: 
+                        <br>
+                        <code>
+                            $ ./image -FloydSteinbergDither 2 &lt;input.bmp &gt;.out.bmp
+                        </code>
+                    </blockquote>
+
+                    <h2 class="section-heading">Result Comparison</h2>
+                    <p>
+                        Original Image
+                    </p>
+                    <img class="img-responsive blog-img" src="img/p1/flower.bmp" alt="">
+                    <p>
+                        Quantization
+                    </p>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/quantize_1.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">1 </span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/quantize_2.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">2</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/quantize_3.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">3</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/quantize_4.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">4</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/quantize_5.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">5</span>
+                        </li>
+                    </ul>
+
+                    <p>
+                        Random Dither
+                    </p>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/random_dither_1.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">1 </span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/random_dither_2.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">2</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/random_dither_3.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">3</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/random_dither_4.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">4</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/random_dither_5.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">5</span>
+                        </li>
+                    </ul>
+
+                    <p>
+                        Floyd-Steinberg Dither
+                    </p>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/floyd_steinberg_1.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">1 </span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/floyd_steinberg_2.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">2</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/floyd_steinberg_3.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">3</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/floyd_steinberg_4.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">4</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/floyd_steinberg_5.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">5</span>
+                        </li>
+                    </ul>
+
+
+
+
+
+
+
+                    <h2 class="section-heading">Discrete Convolution</h2>
+                    <p>
+                        Discrete convolution is important in helping us implementing interesting effects such as blur, sharen and basic edge detection. The idea is to fill in each pixel for the new image by convoling with pixels in the old image the following way
+                        <blockquote class="equation">
+                            I<sub>new</sub>(a, b) = &Sigma; <sub>x=(a - w) to (a + w)</sub> &Sigma; <sub>y=(b - w) to (b + w)</sub> h(x-a, y-b) I<sub>old</sub>(x, y)
+                        </blockquote>
+                        Where I<sub>new</sub> is the intensities of the new pixel sampled at position (a,b), w is kernel width, h is the filter and I<sub>old</sub> is the intensities of the pixel to be sampled in the old image.
+                    </p>
+
+                    <h2 class="section-heading">Blur</h2>
+                    <p>
+                        A Gaussian blur is typically used to reduce image noise and reduce detail. We implemented a Gaussian blur here by convolving the image with a Gaussian filter. In 1D, it is described by the function
+                        <img class="img-responsive blog-img" src="img/p1/gaussian.png" alt="">
+                        where &sigma; is the kernel width. For 2D filters, we simply obtain f(x,y) = f(x)f(y). We use the above equation to generate a kernel of old width (i.e. 3, 5, 7, 11...), then apply the kernel centered at each pixel calculate a new value using its neighbors. Before doing so, we convert it to a integer based kernel by first dividing it by the smallest value (the furthest from the center of the kernel). Then normalizing it to it doesn't affect the brightness of the picture by dividing the kernel by the sum of its values, then after generating a new value for the main pixel, we multiply it by the normalizing factor to get the right pixel color values. The idea here is that each pixel becomes a weighted sum of the pixels close to it, the closer the pixels are to the center pixel, the more weight they carry. 
+                    </p>
+
+                    <ul class="flex-container">
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/flower.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">Original Image</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/blur_3_flower.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">kernel width = 3</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/blur_5_flower.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">5</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/blur_7_flower.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">7</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/blur_11_flower.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">11</span>
+                        </li>
+                    </ul>
+
+                    <ul class="flex-container">
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/checkerboard.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">Original Image</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/blur_3_checkerboard.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">kernel width = 3</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/blur_5_checkerboard.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">5</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/blur_7_checkerboard.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">7</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/blur_11_checkerboard.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">11</span>
+                        </li>
+                    </ul>
+
+                    <blockquote> Example Usage: 
+                        <br>
+                        <code>
+                            $ ./image -blur 3 &lt;input.bmp &gt;.out.bmp
+                        </code>
+                    </blockquote>
+
+                    <h2 class="section-heading">Sharpen</h2>
+                    <p>
+                        To sharpen an image, we used the same convolution function given and simply passed the filter given in the class, as well as the normalizer. We had unknown issues with pink noises showing up when sharpening some images, as in the example of wave below.
+                        <br>
+                        <br> Checkerboard:
+                        <img class="img-responsive blog-img" src="img/p1/sharpen_checkerboard.bmp" alt="">
+                        <br> Flower:
+                        <img class="img-responsive blog-img" src="img/p1/sharpen_flower.bmp" alt="">
+                        <br> Wave looks off, it's got pink noises in it.
+                        <img class="img-responsive blog-img" src="img/p1/sharpen_wave.bmp" alt="">
+                    </p>
+                    <blockquote> Example Usage: 
+                        <br>
+                        <code>
+                            $ ./image -sharpen &lt;input.bmp &gt;.out.bmp
+                        </code>
+                    </blockquote>
+
+                    <h2 class="section-heading">Edge Detection</h2>
+                    <p>
+                        To do edge detection, we apply the sobel horizontal (and vertical) filters to a grayscale version of the image. The Filters simply ignore the current row (or column), weigh the top row (left column) positive and the the bottom row (right side) negative. That way, you can check the difference in luminance around a certain pixel, if either are high then the image is an edge in the image. Then, based on a passed threshold, you determine whether its color is white (it is an edge/important point) or black (it’s not important). 
+                    </p>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/wave.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">Original Image</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/edge_detect_wave_10.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">threshold = 10</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/edge_detect_wave_150.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">150</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/edge_detect_wave_200.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">200</span>
+                        </li>
+                        <li class="flex-item-item-5">
+                            <div class="flex-item-item-5-img-container">
+                                <img class="img-responsive" src="img/p1/edge_detect_wave_255.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">255</span>
+                        </li>
+                    </ul>
+
+                    <blockquote> Example Usage: 
+                        <br>
+                        <code>
+                            $ ./image -edgeDetect 100 &lt;input.bmp &gt;.out.bmp
+                        </code>
+                    </blockquote>
+
+
+
+
+
+                    <h2 class="section-heading">Antialiased Scale and Shift</h2>
+                    <p>
+                        We implemented image scaling and shifting by a real (non-integer) value using three different filters. The first one is nearest neighbor sampling; it is a naive approach that leads to significant aliasing and jaggies. Aliasing is usually caused by under-sampling or poor reconstruction. The second one is a linear filter called hat filter and the third one is a cubic filter called Mitchell reconstruction filter. Both of those filters try to achieve anti-aliasing using convolution.
+                    </p>
+                    <h2 class="section-heading">Nearest Neighbor Sampling</h2>
+                    <p>
+                        Nearest neighbor or point reconstruction simply samples the nearest pixel in the original image to reconstruct each pixel in the target image. For example, say if you scale an image in y direction by sy and x direction by sx, let's define the operation to be the transformation from (u, v) to (x, y) where (u, v) is the warped location in the source image, or old coordinate and (x, y) is the new coordinate in the transformed image. The pixel at (x, y) in the transformed image is sampled from the (u, v) in the original image, where u = round(x / sx), v = round(y / sy).
+                    </p>
+                    <h2 class="section-heading">Hat Filter</h2>
+                    <p>
+                        Hat filter is a linear filter that does bilinear interpolation instead of point sampling. It is described by the function
+                        <blockquote class="equation">
+                            f(x) = 1 - |x|
+                        </blockquote>
+                        where f(x) is none zero when |x| <= 1. For image processing, we construct the 2D bilinear filter from this 1D linear filter by multipling them together: f(x, y) = f(x)f(y)
+                    </p>
+                    <h2 class="section-heading">Mitchell Reconstruction Cubic Filter</h2>
+                    <p>
+                        Mitchell Reconstruction Cubic Filter is an extension of cubic interpolation. This is a good finite filter that approximates ideal sync without ringing or infinite width. In contrast to nearest neighbor or linear filter, it produces a smoother image with fewer artifacts. It is described by the function
+                        <blockquote class="equation">
+                            f(0 <= |x| <= 1) = (7 |x|<sup>3</sup> - 12 |x|<sup>2</sup> + 16 / 3) / 6
+                            <br>
+                            f(1 <= |x| <= 2) = (-7/3 |x|<sup>3</sup> + 12 |x|<sup>2</sup> - 20 |x| + 32 / 3) / 6
+                        </blockquote>
+                        For processing 2D images, we use the bicubic filter f(x, y) = f(x)f(y).
+                    </p>
+                    <h2 class="section-heading">Antialiased Scale</h2>
+                    <p>
+                        To magnifify an image, we interpolate between the original samples to evaluate the fractional values. We do so by convolving with the filter/kernel
+                        <blockquote class="equation">
+                            I<sub>new</sub>(x, y) = &Sigma; <sub>u'=(u - w) to (u + w)</sub> &Sigma; <sub>v'=(v - w) to (v + w)</sub> h(u'-u, v'-v) I<sub>old</sub>(u', v')
+                        </blockquote>
+                        where u = x / &gamma; (&gamma; is scale factor > 1). I<sub>new</sub> is the intensities of the new pixel sampled at position (a,b), w is kernel width, h is the filter and I<sub>old</sub> is the intensities of the pixel to be sampled in the old image. Kernel width varies from filter to filter. For hat filter, kernel width is 1, so the corresponding region gets integrated over goes from u' goes from u - 1 to u + 1. For Mitchell filter, the kernel width is 4. 
+                    </p>
+                    <p>
+                        Minification is similar to mipmapping for texture maps. We use fat pixels of size 1 / &gamma; (where &gamma is scale factor < 1) with new size &gamma; * original size. Each fat pixel is integrated over corresponding region in original image using the filter kernel
+                        <blockquote class="equation">
+                            I<sub>new</sub>(x, y) = &Sigma; <sub>u'=(u - w/&gamma;) to (u + w/&gamma;)</sub> &Sigma; <sub>v'=(v - w/&gamma;) to (v + w/&gamma;)</sub> h(&gamma;(u'-u), &gamma;(v'-v)) I<sub>old</sub>(u', v')
+                        </blockquote>
+                        Note that for minification we need only sum where |su'− x| is smaller than the filter width because that's when the filter is centered at a/s and has width 1/s times the normal filter width.
+                    </p>
+
+                    <p>
+                        Nearest neighbor sampling (To see full rez image, you'll need to open the image in a new tab):
+                    </p>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_point_flower_300_300.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">300 x 300</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_point_flower_300_512.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">300 x 512</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_point_flower_512_300.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">512 x 300</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_point_flower_800_800.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">800 x 800</span>
+                        </li>
+                    </ul>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_point_checkerboard_300_300.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">300 x 300</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_point_checkerboard_300_512.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">300 x 512</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_point_checkerboard_512_300.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">512 x 300</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_point_checkerboard_800_800.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">800 x 800</span>
+                        </li>
+                    </ul>
+
+                    <p>
+                        Hat filter:
+                    </p>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_hat_filter_flower_300_300.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">300 x 300</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_hat_filter_flower_300_512.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">300 x 512</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_hat_filter_flower_512_300.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">512 x 300</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_hat_filter_flower_800_800.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">800 x 800</span>
+                        </li>
+                    </ul>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_hat_filter_checkerboard_300_300.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">300 x 300</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_hat_filter_checkerboard_300_512.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">300 x 512</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_hat_filter_checkerboard_512_300.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">512 x 300</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_hat_filter_checkerboard_800_800.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">800 x 800</span>
+                        </li>
+                    </ul>
+
+                    <p>
+                        Mitchell filter:
+                    </p>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_mitchell_filter_flower_300_300.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">300 x 300</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_mitchell_filter_flower_300_512.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">300 x 512</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_mitchell_filter_flower_512_300.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">512 x 300</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_mitchell_filter_flower_800_800.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">800 x 800</span>
+                        </li>
+                    </ul>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_mitchell_filter_checkerboard_300_300.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">300 x 300</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_mitchell_filter_checkerboard_300_512.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">300 x 512</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_mitchell_filter_checkerboard_512_300.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">512 x 300</span>
+                        </li>
+                        <li class="flex-item-item-4">
+                            <div class="flex-item-item-4-img-container">
+                                <img class="img-responsive" src="img/p1/scale_mitchell_filter_checkerboard_800_800.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">800 x 800</span>
+                        </li>
+                    </ul>
+
+                    <h2 class="section-heading">Antialiased Shift</h2>
+                    <p>
+                        To shift an image based on fractions Sx and Sy, we check for integer inputs, if we shift the image using integers, we treat it the same as using nearest neighbor sampling. Otherwise, we convolve/resample with kernel/filter h
+                        <blockquote class="equation">
+                            I<sub>new</sub>(x, y) = &Sigma; <sub>u'=(u - w) to (u + w)</sub> &Sigma; <sub>v'=(v - w) to (v + w)</sub> h(u'-u, v'-v) I<sub>old</sub>(u', v')
+                        </blockquote>
+                        where u = x - Sx and v = y - Sy. Note that kernel width for hat filter and Mitchell filter are the same as in antialiased scale.
+                    </p>
+
+                    <p>
+                        Integer Sx and Sy or Nearest neighbor sampling (To see full rez image, you'll need to open the image in a new tab):
+                    </p>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-2">
+                            <div class="flex-item-item-2-img-container">
+                                <img class="img-responsive" src="img/p1/shift_point_checkerboard_10_25.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">sx = 10, sy = 25</span>
+                        </li>
+                        <li class="flex-item-item-2">
+                            <div class="flex-item-item-2-img-container">
+                                <img class="img-responsive" src="img/p1/shift_point_checkerboard_-10.3_25.8.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">sx = -10.3, sy = -25.8</span>
+                        </li>
+                    </ul>
+                    <p>
+                        Hat Filter
+                    </p>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-2">
+                            <div class="flex-item-item-2-img-container">
+                                <img class="img-responsive" src="img/p1/shift_hat_checkerboard_10_25.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">sx = 10, sy = 25</span>
+                        </li>
+                        <li class="flex-item-item-2">
+                            <div class="flex-item-item-2-img-container">
+                                <img class="img-responsive" src="img/p1/shift_hat_checkerboard_-10.3_25.8.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">sx = -10.3, sy = -25.8</span>
+                        </li>
+                    </ul>
+                    <p>
+                        Mitchell Filter
+                    </p>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-2">
+                            <div class="flex-item-item-2-img-container">
+                                <img class="img-responsive" src="img/p1/shift_mitchell_checkerboard_10_25.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">sx = 10, sy = 25</span>
+                        </li>
+                        <li class="flex-item-item-2">
+                            <div class="flex-item-item-2-img-container">
+                                <img class="img-responsive" src="img/p1/shift_mitchell_checkerboard_-10.3_25.8.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">sx = -10.3, sy = -25.8</span>
+                        </li>
+                    </ul>
+
+                    <blockquote> 
+                        Example Usage: 
+                        <br>
+                        To change the size of the image, use "-size" flag.  "-sampling" flag is is used in combination with "-shift" or "-size" to determine which filter to use for scaling or resizing. There are 3 filters in total, the corresponding args are: 0 = nearest neighbor, 1 = hat filter, 2 = Mitchell filter
+                        <br>
+                        <code>
+                            $ ./image -sampling 2 -size 350 500 &lt;input.bmp &gt;.out.bmp
+                        </code>
+                        <br>
+                        To change shift, simply use "-shift" flag
+                        <br>
+                        <code>
+                            $ ./image -sampling 2 -shift 33.3 55.5 &lt;input.bmp &gt;.out.bmp
+                        </code>  
+                    </blockquote>
+
+
+
+
+
+                    <h2 class="section-heading">Fun Filter: Motion Blur Filter</h2>
+                    <p>
+                        For a fun filter, we decided to implement a subtle motion blur-like filter where each image looks at its right and left neighbors, then update its value based on theirs. It was a simple 3x3 filter whose top and bottom rows are 0s and the middle weighs the centered pixel the most. 
+                    </p>
+                    <ul class="flex-container">
+                        <li class="flex-item-item-3">
+                            <div class="flex-item-item-3-img-container">
+                                <img class="img-responsive" src="img/p1/motion_blur_flower.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">Flower</span>
+                        </li>
+                        <li class="flex-item-item-3">
+                            <div class="flex-item-item-3-img-container">
+                                <img class="img-responsive" src="img/p1/motion_blur_checkerboard.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">Checkerboard</span>
+                        </li>
+                        <li class="flex-item-item-3">
+                            <div class="flex-item-item-3-img-container">
+                                <img class="img-responsive" src="img/p1/motion_blur_wave.bmp" alt="">
+                            </div>
+                            <span class="flex-item-text">Wave</span>
+                        </li>
+                    </ul>
+                    <blockquote> Example Usage: 
+                        <br>
+                        <code>
+                            $ ./image -fun &lt;input.bmp &gt;.out.bmp
+                        </code>
+                    </blockquote>
+
+
+                    
+
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <!--<ul class="list-inline text-center">
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>-->
+                    <p class="copyright text-muted">Copyright &copy; 2017</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="js/jqBootstrapValidation.js"></script>
+    <script src="js/contact_me.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
