@@ -47,7 +47,8 @@
 
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header" style="background-image: url('img/sun_rise.jpg')">
+    <!--<header class="intro-header" style="background-image: url('img/sun_rise.jpg')">-->
+    <header class="intro-header" style="background: rgb(20, 20, 20)">
         <div class="container">
             <div class="row">
                 <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
@@ -96,7 +97,7 @@
                     </p>
 
 
-                    <h2 class="section-heading">Lambertian reflectance and Cosine-Weighted Hemisphere sample distribution</h2>
+                    <h2 class="section-heading">Lambertian reflectance & Cosine-Weighted Hemisphere sample distribution</h2>
                     <p>
                     </p>
 
@@ -157,7 +158,7 @@
                         These are the final images I rendered. The sphere on the far left is transparent glass Fresnel Dielectrics and the dragon on the right has absorption color of red. The black holder is also Fresnel Dielectrics with absoprtion color of RGB(0.2, 0.2, 0.2) and really high absorption coefficient of 20. The gold dragon in the middle is Ashikhmin BRDF. Those images below each have a sampling rate of 10x10 per pixel and it took about an hour to render each image on my 13'' macbook pro. The result looks pretty satisfying. 
                         <img class="img-responsive blog-img" src="img/p2/final_2.jpg" alt="">
                         <br>
-                        Yet another image.
+                        Yet another image. Note the aliasing on the money cat is due to the low resolution of the model itself. Physically based rendering doesn't do well on low poly models.
                         <img class="img-responsive blog-img" src="img/p2/final_1.jpg" alt="">
                     </p>
 
