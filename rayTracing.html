@@ -55,7 +55,7 @@
                     <div class="post-heading">
                         <h1>A Recursive Path Tracer</h1>
                         <h3>
-                            Implemented a Monte Carlo method based path tracer that supports lambertian surface, fresnel metals, dielectric Fresnel material, absorption using Beer Lambert Law, environment mapping, Ashikhmin BRDF and attempted Cook Torrence BRDF.
+                            Implemented a Monte Carlo method based path tracer in C++ that supports lambertian surface, fresnel metals, dielectric Fresnel material, absorption using Beer Lambert Law, environment mapping, Ashikhmin BRDF and attempted Cook Torrence BRDF.
                         </h3>
                         <span class="meta">Posted by Alex Ouyang on June 15, 2017</span>
                     </div>
@@ -72,38 +72,50 @@
 
                     <h2 class="section-heading">Recursive Path Tracing</h2>
                     <p>
-                        One way to implement ray tracing is to use Monte Carlo method based path tracing. Fundamentally, path tracing integrates over all the illuminance arriving to a single point on a surface recursively, and you repeat this process for each ray shoots out form the camera. The illuminance is calculated using a BRDF (Bidirectional Reflectance Distribution Function) which is a function that defines how light is reflected at a surface.
+                        One way to implement ray tracing is to use Monte Carlo method based path tracing. Fundamentally, path tracing integrates over all the illuminance arriving to a single point on a surface recursively. The illuminance is calculated using a BRDF (Bidirectional Reflectance Distribution Function) which is a function that defines how light is reflected at a surface. A recursive path tracing traces rays from the eye, or camera into the scene until they hit a surface, then up to three new types of rays are generated: reflection, refraction, and shadow rays. Since path tracer only allows one path, so one ray is sampled based on surface property. This process for each ray shoots out form the camera.
                     <p>
                     <p>
-                        My initial version of the path tracer supports diffuse lighting without shadows from both point and directional light sources on primitive object such as boxes. I also have a simple camera model with adjustable camera matrix, field of view, and output image resolution. It looks something like this:
+                        My initial version of the path tracer supports diffuse lighting with shadows from both point and directional light sources. I also have a simple camera model with adjustable camera matrix, field of view, and output image resolution. It looks something like this:
                         <img class="img-responsive blog-img" src="img/p2/basic.jpg" alt="">
                     <p>
 
                     <h2 class="section-heading">Bounding Volume Hierarchy (BVH)</h2>
                     <p>
-                        For a path tracer, we can roughly estimate its rendering time as being proportional to the number of ray-triangle intersection tests required. My initial version of the path tracer is very primitive, for each ray I loop through all triangles in the scene to check for intersection, but this method is very expansive and inefficient, so I decided to do something to speed up my path tracer. The obvious way is to add multi-threading, which I did using OpenMP. The rendering process is dynamically scheduled, the image is divided into batches where each batch is a row of pixels and are fed into the threads. Multi-threading increased the rendering speed significantly.
+                        We can roughly estimate a path tracer's rendering time as being proportional to the number of ray-triangle intersection tests required. My initial version of the path tracer is very primitive, for each ray I loop through all triangles in the scene to check for intersection, which is very expansive and inefficient, so I decided to do something to speed up my path tracer. The obvious way is to add multi-threading, which I did using OpenMP. The rendering process is dynamically scheduled, the image is divided into batches where each batch is a row of pixels and is fed into one thread.
                     </p>
                     <p>
-                        Another common way to increase rendering speed is to take advantage of spatial data structure and that's why I decided to implement a type of BVH called Axis-aligned Box Tree. The idea is to wrap all triangles in the scene in bounding volumes that form the leaf nodes of the tree. These nodes are then grouped as small sets and enclosed within larger bounding volumes. These, in turn, are also grouped and enclosed within other larger bounding volumes in a recursive fashion, eventually resulting in a tree structure with a single bounding volume at the top of the tree. This reduces the ray-triangle intersection check from linear to logarithmic. The tree construction process happens before we begin actual rendering, it can be a time consuming process that itself often runs at O(N log N) performance for N triangles in the scene. Note that O(N log N) is slower than linear, but we hope that the entire tree creation is still faster than the render itself. Ultimately however, as N grows, this can be the limiting factor to scene complexity.
+                        Another common way to increase rendering speed is to take advantage of spatial data structures such as Bounding Volume Hierarchy (BVH), so I decided to implement a type of BVH called Axis-aligned Box Tree. The idea is to wrap all triangles in the scene in bounding volumes that form the leaf nodes of the tree. These nodes are then grouped as small sets and enclosed within larger bounding volumes. These, in turn, are also grouped and enclosed within other larger bounding volumes in a recursive fashion, eventually resulting in a tree structure with a single bounding volume at the top of the tree. This reduces the ray-triangle intersection check from linear to logarithmic. The tree construction process happens before we begin actual rendering, it can be a time consuming process that itself often runs at O(N log N) performance for N triangles in the scene. Note that O(N log N) is slower than linear, but we hope that the entire tree creation is still faster than the render itself. Ultimately however, as N grows, this can be the limiting factor to scene complexity.
                         <img class="img-responsive blog-img" src="img/p2/bvh.png" alt="">
                     </p>
                     </p>
-                        On top of that I also implemented a mesh loader for PLY objects, it parses a mesh file and construct the BVH tree.
+                        On top of that I also implemented a mesh loader for PLY objects, it parses a mesh file and constructs the BVH tree. These techniques increased the rendering speed significantly.
                     <p>
 
 
-                    <h2 class="section-heading">AntiAliasing</h2>
+                    <h2 class="section-heading">Antialiasing</h2>
                     <p>
+                        Antialiasing is a good way to prevent noises such as flickering problems, stairstepping or Moiré patterns. The easiest way to improve the antialiasing in a ray tracer is to super sample rays, which means we trace more than one ray per pixel. I also added a type of random sampling know as jittered or stratified sampling. With random sampling, the pixel is supersampled at several randomly located points, which further prevented noises. Furthermore, I added a type of weighted sampling called Shirley sampling, it is similar to gaussian sampling but a little bit more uniform looking. A combination of these antialising techniques worked out great for me.
                     </p>
 
 
                     <h2 class="section-heading">Lambertian reflectance & Cosine-Weighted Hemisphere sample distribution</h2>
                     <p>
+                        My next step was to try out different BRDFs. For the diffuse Lambert material, we generate a sample ray in a cosine-weighted hemispherical direction that's distributed around the surface normal. Cosine-weighted samples of the hemisphere can be obtained by uniformly sampling a unit sphere. The surface color of Lambertian is essentially the material color.
                     </p>
 
 
                     <h2 class="section-heading">Fresnel metals</h2>
                     <p>
+                        For Fresnel metal, the generated sample ray direction would simply be a reflection across the surface normal, and the surface color is computed based on the Fresnel equations for the given angles. 
+                        <br>
+                        <br>
+                        The image below is rendered using super smapling (10x10 per pixel). The 2nd dragon from left is fresnel metal and the rest are lambertian.
+                        <img class="img-responsive blog-img" src="img/p2/project3.jpg" alt="">
+                    </p>
+
+                    <h2 class="section-heading">Ashikhmin-Shirley BRDF</h2>
+                    <p>
+                        <img class="img-responsive blog-img" src="img/p2/project4.jpg" alt="">
                     </p>
 
                     <h2 class="section-heading">Environment Mapping</h2>
